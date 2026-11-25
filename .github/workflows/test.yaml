@@ -12,15 +12,15 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Each Python in its official image: GitHub's Ubuntu runners no longer carry 3.9, which the
+    # library still supports (RHEL 9 and Debian 11 ship it as their system Python).
+    container: python:${{ matrix.python-version }}-slim
     strategy:
       fail-fast: false
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
       - run: python -m pip install --upgrade pip
       - run: pip install -e '.[dev]'
       - run: pytest
